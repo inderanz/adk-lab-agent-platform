@@ -1,7 +1,7 @@
 """Dynamic Auth MCP Toolset for Google Agent Platform.
 
-Solves the 1-hour token expiration bug by providing dynamic Bearer token headers
-and connection pooling.
+Solves the 1-hour token expiration bug by providing dynamic Bearer token headers,
+connection pooling, and resilient retry configurations.
 """
 
 import os
@@ -17,6 +17,7 @@ for p in [current_dir, parent_dir]:
         sys.path.insert(0, p)
 
 from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset, StreamableHTTPConnectionParams
+from google.adk.tools.mcp_tool.mcp_session_manager import RetryConfiguration
 
 try:
     from src.security.identity import DynamicGoogleAuthTokenProvider
@@ -31,7 +32,7 @@ def create_dynamic_mcp_toolset(
     server_url: Optional[str] = None,
     buffer_seconds: int = 300
 ) -> MCPToolset:
-    """Creates a production-grade MCPToolset equipped with dynamic OAuth2 ID token refresh."""
+    """Creates a production-grade MCPToolset equipped with dynamic OAuth2 ID token refresh and auto-retry."""
     url = server_url or os.getenv("MCP_SERVER_URL") or DEFAULT_MCP_URL
 
     logger.info(f"[MCP Toolset] Initializing dynamic Streamable HTTP MCP connection to: {url}")
@@ -51,4 +52,15 @@ def create_dynamic_mcp_toolset(
         }
     )
 
-    return MCPToolset(connection_params=connection_params)
+    retry_config = RetryConfiguration(
+        max_attempts=3,
+        initial_delay=0.5,
+        max_delay=5.0,
+        backoff_factor=2.0,
+        jitter=True
+    )
+
+    return MCPToolset(
+        connection_params=connection_params,
+        retry_configuration=retry_config
+    )
