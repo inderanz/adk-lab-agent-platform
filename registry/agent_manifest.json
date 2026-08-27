@@ -1,0 +1,41 @@
+{
+  "schema_version": "v1alpha",
+  "id": "zoo-tour-guide-agent",
+  "name": "Zoo Tour Guide Multi-Agent System",
+  "description": "Enterprise multi-agent assistant delivering intelligent zoo tours, habitat guidance, and wildlife knowledge via Google Agent Platform.",
+  "version": "2.0.0",
+  "author": "Google Agent Platform Team",
+  "runtime": {
+    "engine": "adk-2.x",
+    "entrypoint": "src.agent:root_agent",
+    "framework": "google-adk",
+    "container_port": 8080
+  },
+  "service_identity": {
+    "type": "gcp-service-account",
+    "roles": [
+      "roles/aiplatform.user",
+      "roles/run.invoker",
+      "roles/datastore.user"
+    ]
+  },
+  "capabilities": {
+    "streaming": true,
+    "modalities": ["TEXT"],
+    "tool_protocols": ["MCP", "VERTEX_GROUNDING"],
+    "a2a_enabled": true
+  },
+  "endpoints": {
+    "chat": "/chat",
+    "stream": "/stream",
+    "healthz": "/healthz",
+    "metrics": "/metrics"
+  },
+  "mcp_dependencies": [
+    {
+      "id": "zoo-animals-service",
+      "required": true,
+      "policy": "DYNAMIC_ID_TOKEN"
+    }
+  ]
+}

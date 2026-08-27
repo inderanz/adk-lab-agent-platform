@@ -1,0 +1,26 @@
+# Vertex AI Model Armor & Safety Guardrails Policy
+
+guardrails:
+  prompt_injection_defense:
+    enabled: true
+    action: "BLOCK_AND_LOG"
+    sensitivity: "HIGH"
+
+  content_safety_filters:
+    hate_speech: "BLOCK_MEDIUM_AND_ABOVE"
+    harassment: "BLOCK_MEDIUM_AND_ABOVE"
+    dangerous_content: "BLOCK_MEDIUM_AND_ABOVE"
+    sexually_explicit: "BLOCK_MEDIUM_AND_ABOVE"
+
+  pii_sanitization:
+    enabled: true
+    masking_types:
+      - "EMAIL_ADDRESS"
+      - "PHONE_NUMBER"
+      - "CREDIT_CARD_NUMBER"
+      - "SSN"
+
+  grounding_faithfulness_check:
+    enabled: true
+    min_faithfulness_score: 0.85
+    fallback_message: "I am unable to verify that fact from our official zoo records or grounded sources."

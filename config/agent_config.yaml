@@ -1,0 +1,28 @@
+# Agent Platform Runtime Configuration
+
+application:
+  name: "zoo-tour-guide-platform"
+  version: "2.0.0"
+  environment: "production"
+
+model:
+  name: "gemini-3.7-flash"
+  temperature: 0.2
+  max_output_tokens: 2048
+  location: "global"
+  use_enterprise: true
+
+persistence:
+  session_service_type: "firestore"
+  memory_service_type: "vertex_rag"
+  session_ttl_hours: 24
+
+telemetry:
+  enable_cloud_trace: true
+  enable_otel: true
+  sampling_rate: 1.0
+
+security:
+  enforce_authz: true
+  enable_guardrails: true
+  pii_redaction: true
