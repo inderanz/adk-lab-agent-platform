@@ -12,8 +12,19 @@ class AuthZPolicyEnforcer:
 
     def __init__(self, policy_path: Optional[str] = None):
         if not policy_path:
-            # Default location
-            policy_path = str(Path(__file__).parent.parent.parent / "config" / "authz_policy.json")
+            # Check multiple candidate locations
+            candidates = [
+                Path(__file__).parent.parent.parent / "config" / "authz_policy.json",
+                Path(__file__).parent.parent / "config" / "authz_policy.json",
+                Path(__file__).parent / "config" / "authz_policy.json",
+                Path("config/authz_policy.json")
+            ]
+            for candidate in candidates:
+                if candidate.exists():
+                    policy_path = str(candidate)
+                    break
+            if not policy_path:
+                policy_path = str(candidates[0])
         
         self.policy_path = policy_path
         self._policy = self._load_policy()
@@ -22,7 +33,7 @@ class AuthZPolicyEnforcer:
         try:
             with open(self.policy_path, "r") as f:
                 policy = json.load(f)
-                logger.info(f"[AuthZ] Loaded policy: {policy.get('policy_name', 'Unnamed')}")
+                logger.info(f"[AuthZ] Loaded policy from {self.policy_path}: {policy.get('policy_name', 'Unnamed')}")
                 return policy
         except Exception as e:
             logger.warning(f"[AuthZ] Could not load policy from {self.policy_path}: {e}. Defaulting to STRICT mode.")

@@ -25,6 +25,9 @@ echo "Service:      $SERVICE_NAME"
 echo "Model:        ${MODEL:-gemini-3.7-flash}"
 echo "MCP Endpoint: ${MCP_SERVER_URL:-https://zoo-mcp-server-${PROJECT_NUMBER}.${REGION}.run.app/mcp/}"
 
+# Ensure config files are bundled in src
+cp -r config/ registry/ requirements.txt src/ 2>/dev/null || true
+
 # Deploy using ADK 2.x CLI with enterprise telemetry & UI
 echo "Launching ADK deployment..."
 adk deploy cloud_run \
@@ -38,10 +41,11 @@ adk deploy cloud_run \
   -- \
   --allow-unauthenticated
 
-# Update runtime environment configuration
+# Update runtime environment configuration and preserve container port 8000
 echo "Configuring enterprise environment variables and metadata labels..."
 gcloud run services update "$SERVICE_NAME" \
   --region="$REGION" \
+  --port=8000 \
   --update-labels=tier=enterprise,framework=adk-2x,app=zoo-tour-guide \
   --set-env-vars="MODEL=${MODEL:-gemini-3.7-flash},MCP_SERVER_URL=${MCP_SERVER_URL:-https://zoo-mcp-server-${PROJECT_NUMBER}.${REGION}.run.app/mcp/},GOOGLE_CLOUD_LOCATION=global,PROJECT_ID=${PROJECT_ID}"
 

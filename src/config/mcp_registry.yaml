@@ -1,0 +1,30 @@
+# Model Context Protocol (MCP) Server Registry Manifest
+
+mcp_servers:
+  zoo_animals_mcp:
+    id: "zoo-animals-service"
+    name: "Zoo Exhibits & Animal Directory MCP Server"
+    description: "Enterprise MCP service providing structured animal records, habitat locations, age, and dietary care schedules."
+    transport:
+      type: "streamable-http"
+      url_env_var: "MCP_SERVER_URL"
+    auth:
+      type: "google-id-token"
+      audience_type: "service-url"
+      dynamic_refresh: true
+      refresh_buffer_seconds: 300
+    tools:
+      - name: "get_animal_info"
+        description: "Fetch real-time records for animals currently living at our zoo."
+        input_schema:
+          type: "object"
+          properties:
+            animal_name:
+              type: "string"
+              description: "Name or species of the animal"
+          required: ["animal_name"]
+      - name: "list_exhibits"
+        description: "List all exhibits, operating hours, and location coordinates within the zoo grounds."
+        input_schema:
+          type: "object"
+          properties: {}

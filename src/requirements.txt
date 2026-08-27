@@ -1,0 +1,24 @@
+# Core Google Agent Development Kit & Gemini SDK
+google-adk==1.28.0
+google-genai>=1.75.0
+google-cloud-aiplatform>=1.70.0
+
+# Telemetry & Observability
+opentelemetry-api>=1.38.0
+opentelemetry-sdk>=1.38.0
+opentelemetry-exporter-gcp-trace>=1.15.0
+google-cloud-logging>=3.11.0
+
+# Security, Identity & Transport
+google-auth>=2.37.0
+google-auth-oauthlib>=1.2.1
+requests>=2.32.0
+mcp>=1.29.1
+
+# Toolsets & Integrations
+langchain==1.2.14
+langchain-community==0.4.1
+wikipedia==1.4.0
+python-dotenv>=1.0.0
+pydantic>=2.10.0
+PyYAML>=6.0.2

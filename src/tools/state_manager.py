@@ -1,9 +1,23 @@
 """Enterprise Session State & Context Management."""
 
+import os
+import sys
 import logging
 from typing import Any, Dict
+
+# Ensure flexible module resolution
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+for p in [current_dir, parent_dir]:
+    if p not in sys.path:
+        sys.path.insert(0, p)
+
 from google.adk.tools.tool_context import ToolContext
-from src.security.guardrails import GuardrailValidator
+
+try:
+    from src.security.guardrails import GuardrailValidator
+except ImportError:
+    from security.guardrails import GuardrailValidator
 
 logger = logging.getLogger("agent_platform.tools.state")
 

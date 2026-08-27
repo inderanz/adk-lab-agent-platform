@@ -1,0 +1,35 @@
+{
+  "version": "1.0",
+  "policy_name": "ZooAgentPlatformAuthZ",
+  "description": "Fine-grained Authorization (AuthZ) policy restricting agent tool invocation permissions.",
+  "roles": {
+    "greeter": {
+      "allowed_tools": [
+        "add_prompt_to_state"
+      ],
+      "denied_tools": [
+        "get_animal_info",
+        "list_exhibits",
+        "enterprise_grounding_search"
+      ]
+    },
+    "comprehensive_researcher": {
+      "allowed_tools": [
+        "get_animal_info",
+        "list_exhibits",
+        "enterprise_grounding_search"
+      ],
+      "denied_tools": [
+        "add_prompt_to_state",
+        "admin_execute_command"
+      ]
+    },
+    "response_formatter": {
+      "allowed_tools": [],
+      "denied_tools": [
+        "*"
+      ]
+    }
+  },
+  "default_action": "DENY"
+}

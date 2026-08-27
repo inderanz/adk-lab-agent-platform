@@ -11,17 +11,28 @@ import sys
 import logging
 from dotenv import load_dotenv
 
-# Ensure package root is in path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Ensure flexible module resolution
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+for p in [current_dir, parent_dir]:
+    if p not in sys.path:
+        sys.path.insert(0, p)
 
 from google.adk import Agent
 from google.adk.agents import SequentialAgent
 
-from src.telemetry.tracing import init_telemetry, trace_span
-from src.tools.dynamic_mcp import create_dynamic_mcp_toolset
-from src.tools.enterprise_grounding import create_enterprise_grounding_tool
-from src.tools.state_manager import add_prompt_to_state
-from src.security.policy_enforcer import AuthZPolicyEnforcer
+try:
+    from src.telemetry.tracing import init_telemetry, trace_span
+    from src.tools.dynamic_mcp import create_dynamic_mcp_toolset
+    from src.tools.enterprise_grounding import create_enterprise_grounding_tool
+    from src.tools.state_manager import add_prompt_to_state
+    from src.security.policy_enforcer import AuthZPolicyEnforcer
+except ImportError:
+    from telemetry.tracing import init_telemetry, trace_span
+    from tools.dynamic_mcp import create_dynamic_mcp_toolset
+    from tools.enterprise_grounding import create_enterprise_grounding_tool
+    from tools.state_manager import add_prompt_to_state
+    from security.policy_enforcer import AuthZPolicyEnforcer
 
 # Load environment configuration
 load_dotenv()
